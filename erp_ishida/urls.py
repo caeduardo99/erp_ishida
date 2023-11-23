@@ -28,6 +28,9 @@ urlpatterns = [
     path('empresa/mq2010New/contact', views.contact, name='contact'),
     path('empresa/mq2010New/infoempresa', views.infoempresa, name='infoempresa'),
     path('empresa/mq2010New/facturacion', views.facturacion, name='facturacion'),
+    path('empresa/mq2010New/listaprecios', views.listaprecios, name='listaprecios'),
+    path('empresa/mq2010New/listapreciosjson', views.listapreciojson, name='listapreciosjson'),
+    path('empresa/mq2010New/bodegajson', views.obtener_bodegas, name='bodegajson'),
 
 ]
 if settings.DEBUG:

@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block content %}
+    <!-- Contenido específico de la página de dashboard -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h3>Lista de Precios</h3>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <div class="content">
+        <div class="card">
+
+            <div class="card-header">
+                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filtroModal">Filtros</button>
+            </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="filtroModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filtroModalLabel">Filtros</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Contenido del modal -->
+                            <form>
+                                <!-- Primer input -->
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Cód.Item" class="small">Cód.Item</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" id="Cod_Item"
+                                               name="coditem">
+                                    </div>
+                                </div>
+
+                                <!-- Segundo input -->
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Cód.Alterno" class="small">Cód.Alterno</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" id="Cod_Alterno">
+                                    </div>
+                                </div>
+
+                                <!-- Tercer input -->
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Descripcion" class="small">Descripcion</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" id="Descripcion">
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-secondary" id="abrirSegundoModal">
+                                            Seleccionar Bodegas
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <textarea class="form-control" id="Bodegas" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Tipo" class="small">Tipo</label>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control form-control-sm select2" id="Tipo">
+                                            <option value="">Seleccione tipo</option>
+                                            <option value="0">0 - Normal</option>
+                                            <option value="1">1 - Receta</option>
+                                            <option value="2">2 - Familia</option>
+                                            <option value="3">3 - Cambio Presentacion</option>
+                                            <option value="4">4 - Preparacion</option>
+                                            <option value="5">5 - Promocion</option>
+                                            <option value="6">6 - Rubro</option>
+                                            <option value="7">7 - Porcenjate Preparacion</option>
+                                            <option value="8">8 - Matriz</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row mb-2">
+                                    <div class="col">
+                                        <label for="Visualizar Precios" class="small">Visualizar Precios</label>
+                                    </div>
+                                </div>
+                                <div class="form-row mb-2">
+                                    <div class="col-auto">
+                                        <label for="Sin Iva" class="small mr-2">Sin Iva</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox1" value="1">
+                                            <label class="form-check-label" for="checkbox1">1</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox2" value="2">
+                                            <label class="form-check-label" for="checkbox2">2</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox3" value="3">
+                                            <label class="form-check-label" for="checkbox3">3</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox4" value="4">
+                                            <label class="form-check-label" for="checkbox3">4</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox5" value="5">
+                                            <label class="form-check-label" for="checkbox5">5</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox6" value="6">
+                                            <label class="form-check-label" for="checkbox6">6</label>
+                                        </div>
+                                        <!-- Repite lo anterior para los checkboxes restantes -->
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="checkbox7" value="7">
+                                            <label class="form-check-label" for="checkbox7">7</label>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="aplicarFiltrosBtn">Aplicar Filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                #listaBodegasContainer {
+                    max-height: 20vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+            </style>
+            <!-- Segundo Modal -->
+            <div class="modal fade" id="segundoModal" tabindex="-1" role="dialog" aria-labelledby="segundoModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="segundoModalLabel">Bodegas Disponibles</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- Contenido del segundo modal (lista de bodegas con checkboxes) -->
+                            <div class="form-group scrollable-list">
+                                <label>Selecciona Bodegas:</label>
+                                <div class="checkbox-list" id="listaBodegasContainer">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example2" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Modulo</th>
+                        <th>Linea</th>
+                        <th>Codgrupo2</th>
+                        <th>Grupo2</th>
+                        <th>CodGrupo4</th>
+                        <th>Cod.Item</th>
+                        <th>Descripción</th>
+                        <th>Unidad</th>
+                        <th>Moneda</th>
+                        <th>Existencia</th>
+                        <th>Obervacion</th>
+                        <th>PorDesperdicio</th>
+                        <th>Presentacion</th>
+                        <th>Tipo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- JavaScript agregará filas aquí -->
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Modulo</th>
+                        <th>Linea</th>
+                        <th>Codgrupo2</th>
+                        <th>Grupo2</th>
+                        <th>CodGrupo4</th>
+                        <th>Cod.Item</th>
+                        <th>Descripción</th>
+                        <th>Unidad</th>
+                        <th>Moneda</th>
+                        <th>Existencia</th>
+                        <th>Obervacion</th>
+                        <th>PorDesperdicio</th>
+                        <th>Presentacion</th>
+                        <th>Tipo</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            // Inicialización de la tabla
+            var dataTable = $("#example2").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+            $('#aplicarFiltrosBtn').on('click', function () {
+                var coditem = $('#Cod_Item').val();
+                var codalterno = $('#Cod_Alterno').val();
+                var descripcion = $('#Descripcion').val();
+                var bodegas = $('#Bodegas').val();
+                var tipo = $('#Tipo').val();
+                console.log(codalterno)
+
+                // Destruir la tabla si ya existe
+                if ($.fn.DataTable.isDataTable('#example2')) {
+                    $('#example2').DataTable().destroy();
+                }
+
+                // Realiza la solicitud AJAX a la vista
+                $.ajax({
+                    url: '{% url "listapreciosjson" %}',
+                    dataType: 'json',
+                    data: {
+                        'coditem': coditem,
+                        'codalterno': codalterno,
+                        'descripcion': descripcion,
+                        'bodegas': bodegas,
+                        'tipo': tipo
+                    },
+                    success: function (data) {
+                        console.log(data)
+
+                        // Crear la tabla con los nuevos datos
+                        $('#example2').DataTable({
+                            data: data,
+                            "responsive": true,
+                            "lengthChange": false,
+                            "autoWidth": false,
+
+                            columns: [
+                                {data: 'CodGrupo1'},
+                                {data: 'DescripcionCodGrupo1'},
+                                {data: 'CodGrupo2'},
+                                {data: 'DescripcionCodGrupo2'},
+                                {data: 'CodGrupo4'},
+                                {data: 'CodInventario'},
+                                {data: 'DescripcionItem'},
+                                {data: 'codUnidad'},
+                                {data: 'CodMoneda'},
+                                {data: 'Existencia'},
+                                {data: 'observacion'},
+                                {data: 'pordesperdicio'},
+                                {data: 'Descripcion2'},
+                                {data: 'Tipo'}
+                            ]
+                        }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX:', error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+
+    <!-- Script para abrir el segundo modal -->
+    <script>
+        $(document).ready(function () {
+            // Manejar el clic en el botón para abrir el segundo modal
+            $("#abrirSegundoModal").click(function () {
+                // Mostrar el segundo modal
+                $("#segundoModal").modal("show");
+
+                // Realizar la solicitud AJAX para obtener la lista de bodegas
+                $.ajax({
+                    url: '{% url "bodegajson" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log('bodega', data);
+                        // Limpiar la lista actual de bodegas
+                        $('#listaBodegasContainer').empty();
+
+                        // Llenar la lista de bodegas desde los datos obtenidos
+                        $.each(data, function (index, item) {
+                            var checkbox = '<div class="form-check">' +
+                                '<input class="form-check-input" type="checkbox" value="' + item.IdBodega + '" id="bodega' + index + '">' +
+                                '<label class="form-check-label" for="bodega' + index + '">' + item.CodBodega + '-' + item.Descripcion + '</label>' +
+                                '</div>';
+
+                            $('#listaBodegasContainer').append(checkbox);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX:', error);
+                    }
+                });
+            });
+            // Manejar el clic en el botón "Aceptar" del segundo modal
+            $("#segundoModal").on('click', '.btn-primary', function () {
+                // Obtener los valores seleccionados y concatenarlos en el textarea
+                var valoresSeleccionados = [];
+                $('#listaBodegasContainer input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                // Poner los valores en el textarea
+                $('#Bodegas').val(valoresSeleccionados.join(', '));
+
+                // Cerrar el segundo modal
+                $("#segundoModal").modal("hide");
+            });
+        });
+    </script>
+
+
+
+{% endblock %}

@@ -1,7 +1,7 @@
 import os
 import uuid
 from django.db import connections
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from decimal import Decimal
 from datetime import datetime, timedelta
 import json
@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from django.conf import settings
-
+from django.http import JsonResponse
 # Función para convertir objetos Decimal a números de punto flotante (float)
 from erp_ishida.settings import BASE_DIR
 
@@ -21,6 +21,7 @@ def decimal_to_float(obj):
         return float(obj)
     raise TypeError
 
+
 @login_required
 def mq2010New(request):
     codtrans = 'feja'
@@ -28,8 +29,11 @@ def mq2010New(request):
     connection = connections['empresa']  # Asegúrate de reemplazar 'empresa' con el nombre correcto de tu base de datos.
 
     with connection.cursor() as cursor:
-        cursor.execute("SELECT codvendedor, Nombrevendedor, codlinea1, descripciongrupo1lineas, NombreCliente, FechaTrans, Cantidad*-1 as Cantidad, PrecioRealTotal*-1 as PrecioRealTotal, CostoRealTotal*-1 as CostoRealTotal, Utilidad*-1 as Utilidad FROM view_reports WHERE codtrans = %s", [codtrans])
+        cursor.execute(
+            "SELECT codvendedor, Nombrevendedor, codlinea1, descripciongrupo1lineas, NombreCliente, FechaTrans, Cantidad*-1 as Cantidad, PrecioRealTotal*-1 as PrecioRealTotal, CostoRealTotal*-1 as CostoRealTotal, Utilidad*-1 as Utilidad FROM view_reports WHERE codtrans = %s",
+            [codtrans])
         results = cursor.fetchall()
+        results = sorted(results, key=lambda x: x[0])
         username = request.user
         # Obtén la fecha actual
         fecha_actual = datetime.now()
@@ -89,10 +93,10 @@ def mq2010New(request):
         cursor.execute(
             "SELECT Top 5 DescripcionItem, SUM(PrecioRealTotal * -1) AS Total "
             "FROM view_reports "
-                "WHERE FechaTrans BETWEEN %s AND %s AND codtrans = %s "
+            "WHERE FechaTrans BETWEEN %s AND %s AND codtrans = %s "
             "GROUP BY DescripcionItem "
             "ORDER BY Total DESC ",
-            [primer_dia_mes_actual, fecha_actual,codtrans]
+            [primer_dia_mes_actual, fecha_actual, codtrans]
         )
         productos_mas_vendidos = cursor.fetchall()
 
@@ -108,7 +112,6 @@ def mq2010New(request):
             [primer_dia_mes_actual, fecha_actual, codtrans]
         )
         lineas_mas_vendidas = cursor.fetchall()
-
 
     año_actual = datetime.now().year
     año_anterior = año_actual - 1
@@ -137,14 +140,13 @@ def mq2010New(request):
     if mes_actual > 1:
         mes_anterior = mes_actual - 1
         if ventas_mensual_año_actual[mes_anterior - 1] != 0:
-            cambio_porcentual = ((ventas_mensual_año_actual[mes_actual - 1] - ventas_mensual_año_actual[mes_anterior - 1]) / ventas_mensual_año_actual[mes_anterior - 1]) * 100
+            cambio_porcentual = ((ventas_mensual_año_actual[mes_actual - 1] - ventas_mensual_año_actual[
+                mes_anterior - 1]) / ventas_mensual_año_actual[mes_anterior - 1]) * 100
 
     etiquetas_mes = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
 
-
-
     contexto = {
-        'username':username,
+        'username': username,
         'total_ventas_semana': total_ventas_semana,
         'etiquetas_mes': json.dumps(etiquetas_mes),
         'ventas_mensual_año_actual': json.dumps(ventas_mensual_año_actual, default=decimal_to_float),
@@ -166,7 +168,6 @@ def mq2010New(request):
     return render(request, 'mq2010New.html', contexto)
 
 
-
 @login_required
 def consgeneraltrans(request):
     connection = connections['empresa']
@@ -179,15 +180,12 @@ def consgeneraltrans(request):
     fecha_desde = request.GET.get('fecha_desde', '')  # Obtener la fecha "Desde" del formulario
     fecha_hasta = request.GET.get('fecha_hasta', '')  # Obtener la fecha "Hasta" del formulario
 
-
     if not fecha_desde and not fecha_hasta:
         # Si no se proporcionan fechas, utiliza today_str por defecto
         today = date.today()
         today_str = today.strftime('%Y-%m-%d')
         fecha_desde = today_str
         fecha_hasta = today_str
-
-
 
     # Construye la consulta SQL para obtener una lista de transacciones únicas
     sql_query_unique_trans = """
@@ -285,6 +283,157 @@ ORDER BY Estado;
 
 
 @login_required
+def listaprecios(request):
+    username = request.user
+
+    context = {
+        'username': username
+    }
+    return render(request, 'listaprecios.html', context)
+
+
+def listapreciojson(request):
+    coditem = request.GET.get('coditem', '')
+    codalterno = request.GET.get('codalterno', '')
+    descripcion = request.GET.get('descripcion', '')
+    bodegas = request.GET.get('bodegas', '')
+    tipo = request.GET.get('tipo', '')
+    print(tipo)
+
+    # Construir la cláusula WHERE
+    where_clause = "WHERE IVInventario.BandValida = 1 "
+    if coditem:
+        where_clause += "AND IVInventario.CodInventario LIKE '%%%s%%'" % coditem
+    if codalterno:
+        where_clause += "AND IVInventario.CodAlterno1 LIKE '%%%s%%'" % codalterno
+    if descripcion:
+        where_clause += "AND IVInventario.Descripcion LIKE '%%%s%%'" % descripcion
+    if bodegas:
+        where_clause += "AND Ivbodega.Idbodega IN (%s)" % bodegas
+    if tipo:
+        where_clause += "AND IVInventario.Tipo = %s" % tipo
+
+    raw_sql_query = """
+SELECT 
+    IVGrupo1.CodGrupo1,
+    IVGrupo1.Descripcion as DescripcionCodGrupo1,
+    IVGrupo2.CodGrupo2,
+    IVGrupo2.Descripcion as DescripcionCodGrupo2,
+    IVGrupo4.CodGrupo4,
+    IVInventario.CodInventario,
+    IVInventario.Descripcion as DescripcionItem,
+    IVUnidad.codUnidad,
+    IVInventario.Precio1,
+    IVInventario.Precio2,
+    IVInventario.CodMoneda,
+    SUM(IVExist.Exist) AS Existencia,
+    ivinventario.observacion,
+    ivinventario.pordesperdicio,
+    IVInventario.Descripcion2 as Descripcion2,
+    IVInventario.Tipo
+FROM
+    IVGrupo1
+    RIGHT JOIN (
+        IVGrupo2
+        RIGHT JOIN (
+            IVGrupo3
+            RIGHT JOIN (
+                IVGrupo4
+                RIGHT JOIN (
+                    IVGrupo5
+                    RIGHT JOIN (
+                        IVGrupo6  -- Agregado
+                        RIGHT JOIN (
+                            IVInventario
+                            LEFT JOIN
+                                IVExist
+                                LEFT JOIN
+                                    ivbodega
+                                ON
+                                    ivexist.idbodega = ivbodega.idbodega
+                                ON
+                                    IVInventario.IdInventario = IVExist.IDInventario
+                        )
+                        ON IVGrupo6.IdGrupo6 = IVInventario.IdGrupo6  -- Agregado
+                    )
+                    ON IVGrupo5.IdGrupo5 = IVInventario.IdGrupo5
+                )
+                ON IVGrupo4.IdGrupo4 = IVInventario.IdGrupo4
+            )
+            ON IVGrupo3.Idgrupo3 = IvInventario.Idgrupo3
+        )
+        ON IVGrupo2.Idgrupo2 = IvInventario.Idgrupo2
+    )
+    ON IVGrupo1.Idgrupo1 = IvInventario.Idgrupo1
+LEFT JOIN IVUnidad ON IVUnidad.IdUnidad = IVinventario.idunidad
+%s
+GROUP BY
+    IVGrupo1.CodGrupo1,
+    IVGrupo1.Descripcion,
+    IVGrupo2.CodGrupo2,
+    IVGrupo2.Descripcion,
+    IVGrupo3.CodGrupo3,
+    IVGrupo3.Descripcion,
+    IVGrupo4.CodGrupo4,
+    IVGrupo4.Descripcion,
+    IVGrupo5.CodGrupo5,
+    IVGrupo5.Descripcion,
+	IVGrupo6.CodGrupo6,
+    IVGrupo6.Descripcion,
+    IVInventario.CodInventario,
+    IVInventario.CodAlterno1,
+    IVInventario.Descripcion,
+    IVUnidad.codUnidad,
+    IVInventario.Precio1,
+    (IVInventario.Precio1 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.Precio2,
+    (IVInventario.Precio2 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.Precio3,
+    (IVInventario.Precio3 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.Precio4,
+    (IVInventario.Precio4 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.Precio5,
+    (IVInventario.Precio5 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.Precio6,
+    (IVInventario.Precio6 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.Precio7,
+    (IVInventario.Precio7 * (1 + IVInventario.PorcentajeIVA)),
+    IVInventario.CodMoneda,
+    ivinventario.observacion,
+    IVInventario.pordesperdicio,
+    IVInventario.Descripcion2,
+    IVInventario.Tipo
+HAVING
+    SUM(IVExist.Exist) > 0
+
+    """ % where_clause
+    connection = connections['empresa']
+
+    with connection.cursor() as cursor:
+        cursor.execute(raw_sql_query)
+        columns = [col[0] for col in cursor.description]
+        rows = cursor.fetchall()
+
+    results = [dict(zip(columns, row)) for row in rows]
+
+    return JsonResponse(results, safe=False)
+
+
+def obtener_bodegas(request):
+    # Obtener una conexión a la base de datos
+    connection = connections['empresa']
+    with connection.cursor() as cursor:
+        # Ejecutar la consulta SQL
+        cursor.execute('SELECT * FROM IVBodega')
+
+        # Obtener los resultados de la consulta
+        resultados = [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+
+    # Devolver los resultados en formato JSON
+    return JsonResponse(resultados, safe=False)
+
+
+@login_required
 def contact(request):
     username = request.user
 
@@ -294,14 +443,10 @@ def contact(request):
     return render(request, 'contact.html', context)
 
 
-
 @login_required
 def facturacion(request):
     connection = connections['empresa1']
     username = request.user
-
-
-
 
     with connection.cursor() as cursor:
         cursor.execute("""
@@ -450,7 +595,6 @@ def facturacion(request):
                 'imagen': os.path.exists(os.path.join(settings.MEDIA_ROOT, 'imagenes', f"{row[2]}.jpg"))
                 # Verifica si la imagen existe en el sistema de archivos
 
-
             })
 
     if request.method == 'POST':
@@ -478,9 +622,6 @@ def facturacion(request):
     return render(request, 'facturacion.html', context)
 
 
-
-
-
 def infoempresa(request):
     connection = connections['empresa1']
     username = request.user
@@ -499,7 +640,9 @@ def infoempresa(request):
         imagen = request.FILES.get('imagen')
 
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE GNOpcion SET nombreempresa = %s, direccion1 = %s, direccion2 = %s, Telefono1 = %s, ruc = %s, email = %s, tipoempresa = %s", (nombreempresa, direccion1, direccion2, Telefono1, ruc, email, tipoempresa))
+            cursor.execute(
+                "UPDATE GNOpcion SET nombreempresa = %s, direccion1 = %s, direccion2 = %s, Telefono1 = %s, ruc = %s, email = %s, tipoempresa = %s",
+                (nombreempresa, direccion1, direccion2, Telefono1, ruc, email, tipoempresa))
 
         if imagen:
             # Verifica si la imagen existente debe eliminarse
@@ -513,7 +656,8 @@ def infoempresa(request):
 
     else:
         with connection.cursor() as cursor:
-            cursor.execute("SELECT nombreempresa, direccion1, direccion2, Telefono1, ruc, email, tipoempresa FROM GNOpcion")
+            cursor.execute(
+                "SELECT nombreempresa, direccion1, direccion2, Telefono1, ruc, email, tipoempresa FROM GNOpcion")
             empresa_data = cursor.fetchone()
 
     # Obtiene la URL de la imagen si existe
@@ -526,13 +670,3 @@ def infoempresa(request):
     }
 
     return render(request, 'infoempresa.html', context)
-
-
-
-
-
-
-
-
-
-
