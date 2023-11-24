@@ -107,37 +107,86 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox1" value="1">
-                                            <label class="form-check-label" for="checkbox1">1</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio1" value="1">
+                                            <label class="form-check-label" for="Precio1">1</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox2" value="2">
-                                            <label class="form-check-label" for="checkbox2">2</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio2" value="2">
+                                            <label class="form-check-label" for="Precio2">2</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox3" value="3">
-                                            <label class="form-check-label" for="checkbox3">3</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio3" value="3">
+                                            <label class="form-check-label" for="Precio3">3</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox4" value="4">
-                                            <label class="form-check-label" for="checkbox3">4</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio4" value="4">
+                                            <label class="form-check-label" for="Precio4">4</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox5" value="5">
-                                            <label class="form-check-label" for="checkbox5">5</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio5" value="5">
+                                            <label class="form-check-label" for="Precio5">5</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox6" value="6">
-                                            <label class="form-check-label" for="checkbox6">6</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio6" value="6">
+                                            <label class="form-check-label" for="Precio6">6</label>
                                         </div>
                                         <!-- Repite lo anterior para los checkboxes restantes -->
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="checkbox7" value="7">
-                                            <label class="form-check-label" for="checkbox7">7</label>
+                                            <input class="form-check-input" type="checkbox" id="Precio7" value="7">
+                                            <label class="form-check-label" for="Precio7">7</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-row mb-2">
+                                    <div class="col-auto">
+                                        <label for="Con Iva" class="small mr-2">Con Iva</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio1IVA" value="1">
+                                            <label class="form-check-label" for="Precio1IVA">1</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio2IVA" value="2">
+                                            <label class="form-check-label" for="Precio2IVA">2</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio3IVA" value="3">
+                                            <label class="form-check-label" for="Precio3IVA">3</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio4IVA" value="4">
+                                            <label class="form-check-label" for="Precio4IVA">4</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio5IVA" value="5">
+                                            <label class="form-check-label" for="Precio5IVA">5</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio6IVA" value="6">
+                                            <label class="form-check-label" for="Precio6IVA">6</label>
+                                        </div>
+                                        <!-- Repite lo anterior para los checkboxes restantes -->
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="Precio7IVA" value="7">
+                                            <label class="form-check-label" for="Precio7IVA">7</label>
                                         </div>
                                     </div>
 
+                                </div>
 
+
+                                <div class="form-row mb-2">
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-secondary" id="abrirTercerModal">
+                                            Filtro de Items
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <textarea class="form-control" id="filtroitems" rows="3"></textarea>
+                                    </div>
                                 </div>
 
 
@@ -158,7 +207,29 @@
                     border: 1px solid black; /* Añadir un borde como en el ejemplo */
                     padding: 5px; /* Añadir relleno como en el ejemplo */
                 }
+
+                #listaIvgrupo1Container {
+                    max-height: 15vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+
+                #listaIvgrupo2Container {
+                    max-height: 15vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+
+                #listaIvgrupo6Container {
+                    max-height: 15vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
             </style>
+
             <!-- Segundo Modal -->
             <div class="modal fade" id="segundoModal" tabindex="-1" role="dialog" aria-labelledby="segundoModalLabel"
                  aria-hidden="true">
@@ -181,7 +252,51 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">Aceptar</button>
+                            <button type="button" class="btn btn-primary" id="bodegas">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tercer Modal -->
+
+            <div class="modal" id="tercerModal" tabindex="-1" role="dialog" aria-labelledby="tercerModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <!-- Contenido del modal -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tercerModalLabel">Items Disponibles</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group scrollable-list">
+                                <h6 id="grupo1etiquita" class="d-inline-block font-weight-bold mr-2 small"></h6>
+                                <div class="checkbox-list" id="listaIvgrupo1Container">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+
+                            <div class="form-group scrollable-list">
+                                <h6 id="grupo2etiquita" class="d-inline-block font-weight-bold mr-2 small"></h6>
+                                <div class="checkbox-list" id="listaIvgrupo2Container">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+
+                            <div class="form-group scrollable-list">
+                                <h6 id="grupo6etiquita" class="d-inline-block font-weight-bold mr-2 small"></h6>
+                                <div class="checkbox-list" id="listaIvgrupo6Container">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="guardarCambiosBtn">Guardar cambios
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -204,6 +319,20 @@
                         <th>Existencia</th>
                         <th>Obervacion</th>
                         <th>PorDesperdicio</th>
+                        <th class="hidden" id="header_Precio1">Precio1</th>
+                        <th class="hidden" id="header_Precio1IVA">Precio1+IVA</th>
+                        <th class="hidden" id="header_Precio2">Precio2</th>
+                        <th class="hidden" id="header_Precio2IVA">Precio2+IVA</th>
+                        <th class="hidden" id="header_Precio3">Precio3</th>
+                        <th class="hidden" id="header_Precio3IVA">Precio3+IVA</th>
+                        <th class="hidden" id="header_Precio4">Precio4</th>
+                        <th class="hidden" id="header_Precio4IVA">Precio4+IVA</th>
+                        <th class="hidden" id="header_Precio5">Precio5</th>
+                        <th class="hidden" id="header_Precio5IVA">Precio5+IVA</th>
+                        <th class="hidden" id="header_Precio6">Precio6</th>
+                        <th class="hidden" id="header_Precio6IVA">Precio6+IVA</th>
+                        <th class="hidden" id="header_Precio7">Precio7</th>
+                        <th class="hidden" id="header_Precio7IVA">Precio7+IVA</th>
                         <th>Presentacion</th>
                         <th>Tipo</th>
                     </tr>
@@ -225,6 +354,20 @@
                         <th>Existencia</th>
                         <th>Obervacion</th>
                         <th>PorDesperdicio</th>
+                        <th class="hidden">Precio1</th>
+                        <th class="hidden">Precio1+IVA</th>
+                        <th class="hidden">Precio2</th>
+                        <th class="hidden">Precio2+IVA</th>
+                        <th class="hidden">Precio3</th>
+                        <th class="hidden">Precio3+IVA</th>
+                        <th class="hidden">Precio4</th>
+                        <th class="hidden">Precio4+IVA</th>
+                        <th class="hidden">Precio5</th>
+                        <th class="hidden">Precio5+IVA</th>
+                        <th class="hidden">Precio6</th>
+                        <th class="hidden">Precio6+IVA</th>
+                        <th class="hidden">Precio7</th>
+                        <th class="hidden">Precio7+IVA</th>
                         <th>Presentacion</th>
                         <th>Tipo</th>
                     </tr>
@@ -238,8 +381,14 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+    <!-- pdfmake JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
 
 
+
+    <!-- Script para armar la tabla -->
     <script>
         $(document).ready(function () {
             // Inicialización de la tabla
@@ -247,8 +396,9 @@
                 "responsive": true,
                 "lengthChange": false,
                 "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+            })
+
 
             $('#aplicarFiltrosBtn').on('click', function () {
                 var coditem = $('#Cod_Item').val();
@@ -256,12 +406,15 @@
                 var descripcion = $('#Descripcion').val();
                 var bodegas = $('#Bodegas').val();
                 var tipo = $('#Tipo').val();
+                var filtroitems = $('#filtroitems').val();
                 console.log(codalterno)
 
                 // Destruir la tabla si ya existe
                 if ($.fn.DataTable.isDataTable('#example2')) {
+                    console.log("Destruyendo la tabla existente");
                     $('#example2').DataTable().destroy();
                 }
+
 
                 // Realiza la solicitud AJAX a la vista
                 $.ajax({
@@ -272,18 +425,20 @@
                         'codalterno': codalterno,
                         'descripcion': descripcion,
                         'bodegas': bodegas,
-                        'tipo': tipo
+                        'tipo': tipo,
+                        'filtroitems': filtroitems
                     },
                     success: function (data) {
                         console.log(data)
 
                         // Crear la tabla con los nuevos datos
+                        console.log("Creando la tabla con nuevos datos");
+
                         $('#example2').DataTable({
                             data: data,
                             "responsive": true,
                             "lengthChange": false,
                             "autoWidth": false,
-
                             columns: [
                                 {data: 'CodGrupo1'},
                                 {data: 'DescripcionCodGrupo1'},
@@ -297,21 +452,182 @@
                                 {data: 'Existencia'},
                                 {data: 'observacion'},
                                 {data: 'pordesperdicio'},
+                                {
+                                    data: 'Precio1',
+                                    render: function (data, type, row) {
+                                        // Solo renderizará los datos en la vista, no afecta la data subyacente
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio1').is(':checked')
+                                },
+                                {
+                                    data: 'Precio1IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio1IVA').is(':checked')
+                                },
+                                {
+                                    data: 'Precio2',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio2').is(':checked')
+                                },
+                                {
+                                    data: 'Precio2IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio2IVA').is(':checked')
+                                },
+                                {
+                                    data: 'Precio3',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio3').is(':checked')
+                                },
+                                {
+                                    data: 'Precio3IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio3IVA').is(':checked')
+                                },
+                                {
+                                    data: 'Precio4',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio4').is(':checked')
+                                },
+                                {
+                                    data: 'Precio4IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio4IVA').is(':checked')
+                                },
+                                {
+                                    data: 'Precio5',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio5').is(':checked')
+                                },
+                                {
+                                    data: 'Precio5IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio5IVA').is(':checked')
+                                },
+                                {
+                                    data: 'Precio6',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio6').is(':checked')
+                                },
+                                {
+                                    data: 'Precio6IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio6IVA').is(':checked')
+                                },
+                                {
+                                    data: 'Precio7',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio7').is(':checked')
+                                },
+                                {
+                                    data: 'Precio7IVA',
+                                    render: function (data, type, row) {
+                                        if (type === 'display' || type === 'filter') {
+                                            return parseFloat(data).toFixed(2);
+                                        }
+                                        return data;
+                                    },
+                                    visible: $('#Precio7IVA').is(':checked')
+                                },
                                 {data: 'Descripcion2'},
-                                {data: 'Tipo'}
-                            ]
+                                {data: 'Tipo'},
+
+                            ],
+                            buttons: [
+                        {
+                            extend: 'pdfHtml5',
+                            text: 'Generar PDF',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            text: 'Generar Excel',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        }
+                    ]
                         }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+
+
                     },
                     error: function (error) {
                         console.error('Error en la solicitud AJAX:', error);
                     }
                 });
+                $("#filtroModal").modal("hide");
             });
+
+
         });
     </script>
-
-
-
 
 
     <!-- Script para abrir el segundo modal -->
@@ -346,8 +662,9 @@
                     }
                 });
             });
+
             // Manejar el clic en el botón "Aceptar" del segundo modal
-            $("#segundoModal").on('click', '.btn-primary', function () {
+            $("#bodegas").click(function () {
                 // Obtener los valores seleccionados y concatenarlos en el textarea
                 var valoresSeleccionados = [];
                 $('#listaBodegasContainer input[type="checkbox"]:checked').each(function () {
@@ -364,5 +681,366 @@
     </script>
 
 
+    <!-- Script para abrir el tercer modal -->
+    <script>
+        $(document).ready(function () {
+            // Evento clic para el botón abrirTercerModal
+            $('#abrirTercerModal').on('click', function () {
+                // Abre el modal
+                $('#tercerModal').modal('show');
+
+                // Cargar los checkboxes con datos de la vista Django
+                cargarCheckboxes();
+            });
+
+            // Evento clic para el botón "Guardar cambios"
+            $('#guardarCambiosBtn').on('click', function () {
+                var valoresSeleccionados = obtenerValoresSeleccionados();
+                $('#filtroitems').val(valoresSeleccionados.join(', '));
+
+                // Cerrar el modal después de actualizar el contenido del textarea
+                $('#tercerModal').modal('hide');
+            });
+
+            // Función para cargar los checkboxes
+            function cargarCheckboxes() {
+                // Realizar una solicitud AJAX para obtener los datos de la vista Django para ivgrupo1
+                $.ajax({
+                    url: '{% url "ivgrupo1_json" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Limpiar la lista de checkboxes de ivgrupo1
+                        $('#listaIvgrupo1Container').empty();
+
+                        // Crear checkboxes basados en los datos recibidos de ivgrupo1
+                        $.each(data, function (index, item) {
+                            var checkboxHtml = '<div class="form-check">';
+                            checkboxHtml += '<input class="form-check-input" type="checkbox" value="' + item.CodGrupo1 + '" id="checkbox1_' + index + '">';
+                            checkboxHtml += '<label class="form-check-label" for="checkbox1_' + index + '">' + item.Descripcion + '</label>';
+                            checkboxHtml += '</div>';
+
+                            $('#listaIvgrupo1Container').append(checkboxHtml);
+                        });
+
+                        // Obtener la etiqueta del grupo 1 y establecerla en el elemento h5
+                        var etiquetaGrupo1 = data.length > 0 ? data[0].etiquetagrupo1 : '';
+                        $('#grupo1etiquita').text(etiquetaGrupo1);
+                        // Manejar el evento de cambio en los checkboxes de ivgrupo1
+                        $('input[type="checkbox"][id^="checkbox1_"]').change(function () {
+                            actualizarTextarea();
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX para ivgrupo1:', error);
+                    }
+                });
+
+                // Realizar una solicitud AJAX para obtener los datos de la vista Django para ivgrupo2
+                $.ajax({
+                    url: '{% url "ivgrupo2_json" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Limpiar la lista de checkboxes de ivgrupo2
+                        $('#listaIvgrupo2Container').empty();
+
+                        // Crear checkboxes basados en los datos recibidos de ivgrupo2
+                        $.each(data, function (index, item) {
+                            var checkboxHtml = '<div class="form-check">';
+                            checkboxHtml += '<input class="form-check-input" type="checkbox" value="' + item.CodGrupo2 + '" id="checkbox2_' + index + '">';
+                            checkboxHtml += '<label class="form-check-label" for="checkbox2_' + index + '">' + item.Descripcion + '</label>';
+                            checkboxHtml += '</div>';
+
+                            $('#listaIvgrupo2Container').append(checkboxHtml);
+                        });
+
+                        // Obtener la etiqueta del grupo 2 y establecerla en el elemento h6
+                        var etiquetaGrupo2 = data.length > 0 ? data[0].etiquetagrupo2 : '';
+                        $('#grupo2etiquita').text(etiquetaGrupo2);
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX para ivgrupo2:', error);
+                    }
+                });
+
+                // Realizar una solicitud AJAX para obtener los datos de la vista Django para ivgrupo6
+                $.ajax({
+                    url: '{% url "ivgrupo6_json" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Limpiar la lista de checkboxes de ivgrupo2
+                        $('#listaIvgrupo6Container').empty();
+
+                        // Crear checkboxes basados en los datos recibidos de ivgrupo2
+                        $.each(data, function (index, item) {
+                            var checkboxHtml = '<div class="form-check">';
+                            checkboxHtml += '<input class="form-check-input" type="checkbox" value="' + item.CodGrupo6 + '" id="checkbox6_' + index + '">';
+                            checkboxHtml += '<label class="form-check-label" for="checkbox6_' + index + '">' + item.Descripcion + '</label>';
+                            checkboxHtml += '</div>';
+
+                            $('#listaIvgrupo6Container').append(checkboxHtml);
+                        });
+
+                        // Obtener la etiqueta del grupo 2 y establecerla en el elemento h6
+                        var etiquetaGrupo6 = data.length > 0 ? data[0].etiquetagrupo6 : '';
+                        $('#grupo6etiquita').text(etiquetaGrupo6);
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX para ivgrupo2:', error);
+                    }
+                });
+            }
+
+
+            // Función para obtener los valores seleccionados de los checkboxes
+            function obtenerValoresSeleccionados() {
+                // Obtener los valores seleccionados de los checkboxes de los items
+                var valoresSeleccionados = [];
+                $('#listaIvgrupo1Container input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                // Agregar los valores de los checkboxes de ivgrupo2
+                $('#listaIvgrupo2Container input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                // Agregar los valores de los checkboxes de ivgrupo6
+                $('#listaIvgrupo6Container input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                return valoresSeleccionados;
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
 
 {% endblock %}
+
+
+<script>
+    $(document).ready(function () {
+        // Realizar la solicitud AJAX para obtener la lista de cuentas contables
+        $.ajax({
+            url: '{% url "ctacontablejson" %}',
+            dataType: 'json',
+            success: function (data) {
+                console.log('ctacontable', data);
+
+                // Limpiar la lista actual de cuentas contables
+                $('#Cta_Cont').empty();
+
+                // Agregar la opción por defecto
+                $('#Cta_Cont').append('<option value="">Cuenta Contable</option>');
+
+                // Llenar la lista de cuentas contables desde los datos obtenidos
+                $.each(data, function (index, item) {
+                    var option = '<option value="' + item.CodCuenta + '">' + item.CodCuenta + ' - ' + item.NombreCuenta + '</option>';
+                    $('#Cta_Cont').append(option);
+                });
+
+                // Inicializar el plugin Select2 después de modificar las opciones
+                $('#Cta_Cont').select2({
+                    width: '100%'
+                });
+            },
+            error: function (error) {
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+
+        $('#aplicarFiltrosBtn').on('click', function () {
+            var coditem = $('#Cod_Item').val();
+            var codalterno = $('#Cod_Alterno').val();
+            var descripcion = $('#Descripcion').val();
+            var bodegas = $('#Bodegas').val();
+            var tipo = $('#Tipo').val();
+            var ctacont = $('#Cta_Cont').val();
+            var fecha = $('#Fecha').val();
+            var filtroitems = $('#filtroitems').val();
+            console.log('filtroitems', filtroitems)
+
+            // Realiza la solicitud AJAX a la vista
+            $.ajax({
+                url: '{% url "listaexistenciajson" %}',
+                dataType: 'json',
+                data: {
+                    'coditem': coditem,
+                    'codalterno': codalterno,
+                    'descripcion': descripcion,
+                    'bodegas': bodegas,
+                    'tipo': tipo,
+                    'ctacont': ctacont,
+                    'fecha': fecha,
+                    'filtroitems': filtroitems,
+                },
+                success: function (data) {
+                    console.log(data)
+
+                    // Obtener la fecha y hora actual
+                    var fechaHora = new Date();
+                    var fechaGeneracion = fechaHora.toLocaleDateString();
+                    var horaGeneracion = fechaHora.toLocaleTimeString();
+
+                    // Agregar el encabezado y la tabla en dos columnas
+                    var contenido = '<div class="col-md-6" style="text-align: center; margin-bottom: 10px; white-space: pre-line;">' + encabezado + '</div>';
+                    contenido += '<div class="col-md-6"><table id="example2" class="table table-bordered table-hover"></table></div>';
+
+                    // Limpiar contenido anterior y agregar el nuevo contenido
+                    $('#example2_wrapper .row:eq(0)').html(contenido);
+
+                    // Crear la tabla con los nuevos datos
+                    const dataTable = $('#example2').DataTable({
+                        data: data,
+                        "responsive": true,
+                        "lengthChange": false,
+                        "autoWidth": false,
+
+                        columns: [
+                            {data: 'CodGrupo1'},
+                            {data: 'CodInventario'},
+                            {data: 'Descripcion'},
+                            {data: 'CodBodega'},
+                            {data: 'Existencia'},
+                            {data: 'Uni'},
+                            {data: 'CodMoneda'},
+                            {data: 'Precio1'},
+                            {data: 'Precio2'},
+                            {data: 'Precio3'},
+                            {data: 'Precio4'},
+                            {data: 'Precio5'},
+                            {data: 'Precio6'},
+                            {data: 'Util6'},
+                            {data: 'Precio7'},
+                            {data: 'Util7'},
+                            {data: 'Observacion'},
+                            {data: 'IVA'},
+                            {data: 'PorIVA'},
+                            {data: 'CantRelUni'},
+                            {data: 'CantRelUniCont'},
+                            {data: 'ExistenciaCont'},
+                            {data: 'CodUnidad'},
+                            {data: 'CantRestoCont'},
+                            {data: 'codcuentaactivo'},
+                            {data: 'pesoneto'},
+                            {data: 'pesobruto'},
+                            {data: 'TiempoRep'},
+                            {data: 'Buffer'},
+                            {data: 'FechaUltimOIngreso'},
+                            {data: 'FechaUltimOEgreso'}
+                        ]
+                    });
+
+                    // Mostrar el botón de generar PDF solo si la tabla tiene datos
+                    if (data.length > 0) {
+                        $('#example2_wrapper .col-md-6:eq(0)').append('<button id="generatePdfBtn">Generar PDF</button>');
+                        $('#example2_wrapper .col-md-6:eq(0)').append('<button id="generateExcelBtn">Generar Excel</button>');
+
+                        // Manejador de evento para el botón de generación de PDF
+                        $('#generatePdfBtn').on('click', function () {
+                            // Obtener los datos de la tabla
+                            var tableData = dataTable.rows().data().toArray();
+
+                            // Crear la definición del documento PDF
+                            var pdfDefinition = {
+                                content: [
+                                    {
+                                        text: encabezado, // Usar el encabezado personalizado
+                                        margin: [0, 0, 0, 10] // Margen inferior para separar el encabezado del cuerpo de la tabla
+                                    },
+                                    {
+                                        table: {
+                                            headerRows: 1,
+                                            body: [
+                                                Object.keys(data[0]),
+                                                ...data.map(row => Object.values(row))
+                                            ]
+                                        },
+                                        layout: 'lightHorizontalLines', // Ajustar el diseño de las líneas horizontales
+                                        fontSize: 6 // Ajustar el tamaño de la fuente
+                                    }
+                                ],
+                                pageOrientation: 'landscape', // Establecer la orientación de la página en horizontal
+                                pageSize: 'A3' // Cambiar a 'A2', 'A1', 'Letter', etc., según tus necesidades
+                            };
+
+                            // Generar el PDF
+                            pdfMake.createPdf(pdfDefinition).download('tabla_existencia.pdf');
+                        });
+
+                        // Manejador de evento para el botón de generación de Excel
+                        $('#generateExcelBtn').on('click', function () {
+                            // Crear una nueva instancia de ExcelJS
+                            var workbook = new ExcelJS.Workbook();
+                            var worksheet = workbook.addWorksheet('Tabla Existencia');
+
+                            // Agregar las filas y celdas al archivo Excel
+                            worksheet.addRow(Object.keys(data[0]));
+
+                            // Agregar los datos al archivo Excel
+                            data.forEach(row => {
+                                worksheet.addRow(Object.values(row));
+                            });
+
+                            // Estilos para las celdas del encabezado
+                            worksheet.getRow(1).eachCell({includeEmpty: true}, function (cell) {
+                                cell.font = {bold: true, color: {argb: 'FFFFFF'}}; // Texto en negrita, color blanco
+                                cell.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: '2F75B5'}}; // Fondo azul
+                                cell.border = {
+                                    top: {style: 'thin'},
+                                    left: {style: 'thin'},
+                                    bottom: {style: 'thin'},
+                                    right: {style: 'thin'}
+                                }; // Bordes finos
+                                cell.alignment = {vertical: 'middle', horizontal: 'center'}; // Alineación centrada
+                            });
+
+                            // Estilos para el resto de las celdas
+                            worksheet.eachRow({includeEmpty: true}, function (row) {
+                                row.eachCell(function (cell) {
+                                    cell.border = {
+                                        top: {style: 'thin'},
+                                        left: {style: 'thin'},
+                                        bottom: {style: 'thin'},
+                                        right: {style: 'thin'}
+                                    }; // Bordes finos
+                                    cell.alignment = {vertical: 'middle', horizontal: 'left'}; // Alineación izquierda y centrada verticalmente
+                                });
+                            });
+
+                            // Ajustar el ancho de las columnas automáticamente
+                            worksheet.columns.forEach(function (column, i) {
+                                var maxLength = 0;
+                                column.eachCell({includeEmpty: true}, function (cell) {
+                                    var columnLength = cell.value ? cell.value.toString().length : 10;
+                                    if (columnLength > maxLength) {
+                                        maxLength = columnLength;
+                                    }
+                                });
+                                column.width = maxLength < 10 ? 10 : maxLength + 2;
+                            });
+
+                            // Crear un Blob que contiene el archivo Excel
+                            workbook.xlsx.writeBuffer().then(function (buffer) {
+                                var blob = new Blob([buffer], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+
+                                // Descargar el archivo Excel
+                                saveAs(blob, 'tabla_existencia.xlsx');
+                            });
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error en la solicitud AJAX:', error);
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,724 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block content %}
+    <!-- Contenido específico de la página de dashboard -->
+<section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h3>Lista de Existencia</h3>
+          </div>
+
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <div class="content">
+        <div class="card">
+
+            <div class="card-header">
+                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#filtroModal">Filtros</button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="filtroModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filtroModalLabel">Filtros</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Contenido del modal -->
+                            <form>
+                                <!-- Primer input -->
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Cód.Item" class="small">Cód.Item</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" id="Cod_Item"
+                                               name="coditem">
+                                    </div>
+                                </div>
+
+                                <!-- Segundo input -->
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Cód.Alterno" class="small">Cód.Alterno</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" id="Cod_Alterno">
+                                    </div>
+                                </div>
+
+                                <!-- Tercer input -->
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Descripcion" class="small">Descripcion</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm" id="Descripcion">
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-secondary" id="abrirSegundoModal">
+                                            Seleccionar Bodegas
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <textarea class="form-control" id="Bodegas" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Fecha" class="small">Fecha</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="date" class="form-control form-control-sm" id="Fecha" name="Fecha" />
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-2">
+                                        <label for="Tipo" class="small">Tipo</label>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control form-control-sm select2" id="Tipo">
+                                            <option value="">Seleccione tipo</option>
+                                            <option value="0">0 - Normal</option>
+                                            <option value="1">1 - Receta</option>
+                                            <option value="2">2 - Familia</option>
+                                            <option value="3">3 - Cambio Presentacion</option>
+                                            <option value="4">4 - Preparacion</option>
+                                            <option value="5">5 - Promocion</option>
+                                            <option value="6">6 - Rubro</option>
+                                            <option value="7">7 - Porcenjate Preparacion</option>
+                                            <option value="8">8 - Matriz</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-secondary" id="abrirTercerModal">
+                                            Filtro de Items
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <textarea class="form-control" id="filtroitems" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <select class="form-control select2 form-control-sm" style="width: 100%;" id="Cta_Cont" name="Cta_Cont" onchange="fillClientInfo(this)">
+                                    <option value="">Cuenta Contable</option>
+                                    {% for item in data %}
+                                        <option value="{{ item.CodCuenta }}">{{ item.CodCuenta }} - {{ item.NombreCuenta }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="aplicarFiltrosBtn">Aplicar Filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                #listaBodegasContainer {
+                    max-height: 20vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+
+                #listaIvgrupo1Container {
+                    max-height: 15vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+
+                #listaIvgrupo2Container {
+                    max-height: 15vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+
+                #listaIvgrupo6Container {
+                    max-height: 15vh;
+                    overflow-y: auto;
+                    border: 1px solid black; /* Añadir un borde como en el ejemplo */
+                    padding: 5px; /* Añadir relleno como en el ejemplo */
+                }
+            </style>
+            <!-- Segundo Modal -->
+            <div class="modal fade" id="segundoModal" tabindex="-1" role="dialog" aria-labelledby="segundoModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="segundoModalLabel">Bodegas Disponibles</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- Contenido del segundo modal (lista de bodegas con checkboxes) -->
+                            <div class="form-group scrollable-list">
+                                <label>Selecciona Bodegas:</label>
+                                <div class="checkbox-list" id="listaBodegasContainer">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tercer Modal -->
+
+            <div class="modal" id="tercerModal" tabindex="-1" role="dialog" aria-labelledby="tercerModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <!-- Contenido del modal -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tercerModalLabel">Items Disponibles</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group scrollable-list">
+                                <h6 id="grupo1etiquita" class="d-inline-block font-weight-bold mr-2 small"></h6>
+                                <div class="checkbox-list" id="listaIvgrupo1Container">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+
+                            <div class="form-group scrollable-list">
+                                <h6 id="grupo2etiquita" class="d-inline-block font-weight-bold mr-2 small"></h6>
+                                <div class="checkbox-list" id="listaIvgrupo2Container">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+
+                            <div class="form-group scrollable-list">
+                                <h6 id="grupo6etiquita" class="d-inline-block font-weight-bold mr-2 small"></h6>
+                                <div class="checkbox-list" id="listaIvgrupo6Container">
+                                    <!-- Lista de bodegas se cargará aquí -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="guardarCambiosBtn">Guardar cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example2" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Modulo</th>
+                        <th>Cod.Item</th>
+                        <th>Descripcion</th>
+                        <th>Bodega</th>
+                        <th>Existencia</th>
+                        <th>Uni</th>
+                        <th>Moneda</th>
+                        <th>Precio1</th>
+                        <th>Precio2</th>
+                        <th>Precio3</th>
+                        <th>Precio4</th>
+                        <th>Precio5</th>
+                        <th>Precio6</th>
+                        <th>Util6</th>
+                        <th>Precio7</th>
+                        <th>Util7</th>
+                        <th>Observacion</th>
+                        <th>IVA</th>
+                        <th>%IVA</th>
+                        <th>CantRelUni</th>
+                        <th>CantRelUniCont</th>
+                        <th>ExistenciaCont</th>
+                        <th>CodUnidad</th>
+                        <th>CantRestoCont</th>
+                        <th>CodCuentaActivo</th>
+                        <th>PesoNeto</th>
+                        <th>PesoBruto</th>
+                        <th>TiempoRep</th>
+                        <th>Buffer</th>
+                        <th>FechaUltimOIngreso</th>
+                        <th>FechaUltimOEgreso</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- JavaScript agregará filas aquí -->
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Modulo</th>
+                        <th>Cod.Item</th>
+                        <th>Descripcion</th>
+                        <th>Bodega</th>
+                        <th>Existencia</th>
+                        <th>Uni</th>
+                        <th>Moneda</th>
+                        <th>Precio1</th>
+                        <th>Precio2</th>
+                        <th>Precio3</th>
+                        <th>Precio4</th>
+                        <th>Precio5</th>
+                        <th>Precio6</th>
+                        <th>Util6</th>
+                        <th>Precio7</th>
+                        <th>Util7</th>
+                        <th>Observacion</th>
+                        <th>IVA</th>
+                        <th>%IVA</th>
+                        <th>CantRelUni</th>
+                        <th>CantRelUniCont</th>
+                        <th>ExistenciaCont</th>
+                        <th>CodUnidad</th>
+                        <th>CantRestoCont</th>
+                        <th>CodCuentaActivo</th>
+                        <th>PesoNeto</th>
+                        <th>PesoBruto</th>
+                        <th>TiempoRep</th>
+                        <th>Buffer</th>
+                        <th>FechaUltimOIngreso</th>
+                        <th>FechaUltimOEgreso</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Agrega estas líneas en el encabezado de tu HTML para incluir pdfmake y exceljs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+
+    <script>
+    $(document).ready(function () {
+        // Realizar la solicitud AJAX para obtener la lista de cuentas contables
+          // Inicialización de la tabla
+            var dataTable = $("#example2").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+            })
+
+        $.ajax({
+            url: '{% url "ctacontablejson" %}',
+            dataType: 'json',
+            success: function (data) {
+                console.log('ctacontable', data);
+
+                // Limpiar la lista actual de cuentas contables
+                $('#Cta_Cont').empty();
+
+                // Agregar la opción por defecto
+                $('#Cta_Cont').append('<option value="">Cuenta Contable</option>');
+
+                // Llenar la lista de cuentas contables desde los datos obtenidos
+                $.each(data, function (index, item) {
+                    var option = '<option value="' + item.CodCuenta + '">' + item.CodCuenta + ' - ' + item.NombreCuenta + '</option>';
+                    $('#Cta_Cont').append(option);
+                });
+
+                // Inicializar el plugin Select2 después de modificar las opciones
+                $('#Cta_Cont').select2({
+                    width: '100%'
+                });
+            },
+            error: function (error) {
+                console.error('Error en la solicitud AJAX:', error);
+            }
+        });
+
+        $('#aplicarFiltrosBtn').on('click', function () {
+            var coditem = $('#Cod_Item').val();
+            var codalterno = $('#Cod_Alterno').val();
+            var descripcion = $('#Descripcion').val();
+            var bodegas = $('#Bodegas').val();
+            var tipo = $('#Tipo').val();
+            var ctacont = $('#Cta_Cont').val();
+            var fecha = $('#Fecha').val();
+            var filtroitems = $('#filtroitems').val();
+            console.log('filtroitems', filtroitems)
+
+
+            // Destruir la tabla si ya existe
+                if ($.fn.DataTable.isDataTable('#example2')) {
+                    console.log("Destruyendo la tabla existente");
+                    $('#example2').DataTable().destroy();
+                }
+
+            // Realiza la solicitud AJAX a la vista
+            $.ajax({
+                url: '{% url "listaexistenciajson" %}',
+                dataType: 'json',
+                data: {
+                    'coditem': coditem,
+                    'codalterno': codalterno,
+                    'descripcion': descripcion,
+                    'bodegas': bodegas,
+                    'tipo': tipo,
+                    'ctacont': ctacont,
+                    'fecha': fecha,
+                    'filtroitems': filtroitems,
+                },
+                success: function (data) {
+                    console.log(data)
+
+
+                    // Limpiar contenido anterior y agregar el nuevo contenido
+                    $('#example2_wrapper .row:eq(0)').html();
+
+                    // Crear la tabla con los nuevos datos
+                    const dataTable = $('#example2').DataTable({
+                        data: data,
+                        "responsive": true,
+                        "lengthChange": false,
+                        "autoWidth": false,
+
+                        columns: [
+                            {data: 'CodGrupo1'},
+                            {data: 'CodInventario'},
+                            {data: 'Descripcion'},
+                            {data: 'CodBodega'},
+                            {data: 'Existencia'},
+                            {data: 'Uni'},
+                            {data: 'CodMoneda'},
+                            {data: 'Precio1'},
+                            {data: 'Precio2'},
+                            {data: 'Precio3'},
+                            {data: 'Precio4'},
+                            {data: 'Precio5'},
+                            {data: 'Precio6'},
+                            {data: 'Util6'},
+                            {data: 'Precio7'},
+                            {data: 'Util7'},
+                            {data: 'Observacion'},
+                            {data: 'IVA'},
+                            {data: 'PorIVA'},
+                            {data: 'CantRelUni'},
+                            {data: 'CantRelUniCont'},
+                            {data: 'ExistenciaCont'},
+                            {data: 'CodUnidad'},
+                            {data: 'CantRestoCont'},
+                            {data: 'codcuentaactivo'},
+                            {data: 'pesoneto'},
+                            {data: 'pesobruto'},
+                            {data: 'TiempoRep'},
+                            {data: 'Buffer'},
+                            {data: 'FechaUltimOIngreso'},
+                            {data: 'FechaUltimOEgreso'}
+                        ]
+                    });
+
+                    // Mostrar el botón de generar PDF solo si la tabla tiene datos
+                    if (data.length > 0) {
+                        $('#example2_wrapper .col-md-6:eq(0)').append('<button class="btn btn-danger" id="generatePdfBtn">Generar PDF</button>');
+                        $('#example2_wrapper .col-md-6:eq(0)').append('<button class="btn btn-success" id="generateExcelBtn">Generar Excel</button>');
+
+                        // Manejador de evento para el botón de generación de PDF
+                        $('#generatePdfBtn').on('click', function () {
+                            // Obtener los datos de la tabla
+                            var tableData = dataTable.rows().data().toArray();
+
+                            // Crear la definición del documento PDF
+                            var pdfDefinition = {
+                                content: [
+                                   
+                                    {
+                                        table: {
+                                            headerRows: 1,
+                                            body: [
+                                                Object.keys(data[0]),
+                                                ...data.map(row => Object.values(row))
+                                            ]
+                                        },
+                                        layout: 'lightHorizontalLines', // Ajustar el diseño de las líneas horizontales
+                                        fontSize: 6 // Ajustar el tamaño de la fuente
+                                    }
+                                ],
+                                pageOrientation: 'landscape', // Establecer la orientación de la página en horizontal
+                                pageSize: 'A2' // Cambiar a 'A2', 'A1', 'Letter', etc., según tus necesidades
+                            };
+
+                            // Generar el PDF
+                            pdfMake.createPdf(pdfDefinition).download('tabla_existencia.pdf');
+                        });
+
+                        // Manejador de evento para el botón de generación de Excel
+                        $('#generateExcelBtn').on('click', function () {
+                            // Crear una nueva instancia de ExcelJS
+                            var workbook = new ExcelJS.Workbook();
+                            var worksheet = workbook.addWorksheet('Tabla Existencia');
+
+                            // Agregar las filas y celdas al archivo Excel
+                            worksheet.addRow(Object.keys(data[0]));
+
+                            // Agregar los datos al archivo Excel
+                            data.forEach(row => {
+                                worksheet.addRow(Object.values(row));
+                            });
+
+                            // Estilos para las celdas del encabezado
+                            worksheet.getRow(1).eachCell({ includeEmpty: true }, function (cell) {
+                                cell.font = { bold: true, color: { argb: 'FFFFFF' } }; // Texto en negrita, color blanco
+                                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '2F75B5' } }; // Fondo azul
+                                cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }; // Bordes finos
+                                cell.alignment = { vertical: 'middle', horizontal: 'center' }; // Alineación centrada
+                            });
+
+                            // Estilos para el resto de las celdas
+                            worksheet.eachRow({ includeEmpty: true }, function (row) {
+                                row.eachCell(function (cell) {
+                                    cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }; // Bordes finos
+                                    cell.alignment = { vertical: 'middle', horizontal: 'left' }; // Alineación izquierda y centrada verticalmente
+                                });
+                            });
+
+                            // Ajustar el ancho de las columnas automáticamente
+                            worksheet.columns.forEach(function (column, i) {
+                                var maxLength = 0;
+                                column.eachCell({ includeEmpty: true }, function (cell) {
+                                    var columnLength = cell.value ? cell.value.toString().length : 10;
+                                    if (columnLength > maxLength) {
+                                        maxLength = columnLength;
+                                    }
+                                });
+                                column.width = maxLength < 10 ? 10 : maxLength + 2;
+                            });
+
+                            // Crear un Blob que contiene el archivo Excel
+                            workbook.xlsx.writeBuffer().then(function (buffer) {
+                                var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+                                // Descargar el archivo Excel
+                                saveAs(blob, 'tabla_existencia.xlsx');
+                            });
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error('Error en la solicitud AJAX:', error);
+                }
+
+            });
+                 $("#filtroModal").modal("hide");
+        });
+    });
+</script>
+
+    <!-- Script para abrir el segundo modal -->
+    <script>
+        $(document).ready(function () {
+            // Manejar el clic en el botón para abrir el segundo modal
+            $("#abrirSegundoModal").click(function () {
+                // Mostrar el segundo modal
+                $("#segundoModal").modal("show");
+
+                // Realizar la solicitud AJAX para obtener la lista de bodegas
+                $.ajax({
+                    url: '{% url "bodegajson" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log('bodega', data);
+                        // Limpiar la lista actual de bodegas
+                        $('#listaBodegasContainer').empty();
+
+                        // Llenar la lista de bodegas desde los datos obtenidos
+                        $.each(data, function (index, item) {
+                            var checkbox = '<div class="form-check">' +
+                                '<input class="form-check-input" type="checkbox" value="' + item.IdBodega + '" id="bodega' + index + '">' +
+                                '<label class="form-check-label" for="bodega' + index + '">' + item.CodBodega + '-' + item.Descripcion + '</label>' +
+                                '</div>';
+
+                            $('#listaBodegasContainer').append(checkbox);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX:', error);
+                    }
+                });
+            });
+            // Manejar el clic en el botón "Aceptar" del segundo modal
+            $("#segundoModal").on('click', '.btn-primary', function () {
+                // Obtener los valores seleccionados y concatenarlos en el textarea
+                var valoresSeleccionados = [];
+                $('#listaBodegasContainer input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                // Poner los valores en el textarea
+                $('#Bodegas').val(valoresSeleccionados.join(', '));
+
+                // Cerrar el segundo modal
+                $("#segundoModal").modal("hide");
+            });
+        });
+    </script>
+
+    <!-- Script para abrir el tercer modal -->
+    <script>
+        $(document).ready(function () {
+            // Evento clic para el botón abrirTercerModal
+            $('#abrirTercerModal').on('click', function () {
+                // Abre el modal
+                $('#tercerModal').modal('show');
+
+                // Cargar los checkboxes con datos de la vista Django
+                cargarCheckboxes();
+            });
+
+            // Evento clic para el botón "Guardar cambios"
+            $('#guardarCambiosBtn').on('click', function () {
+                var valoresSeleccionados = obtenerValoresSeleccionados();
+                $('#filtroitems').val(valoresSeleccionados.join(', '));
+
+                // Cerrar el modal después de actualizar el contenido del textarea
+                $('#tercerModal').modal('hide');
+            });
+
+            // Función para cargar los checkboxes
+            function cargarCheckboxes() {
+                // Realizar una solicitud AJAX para obtener los datos de la vista Django para ivgrupo1
+                $.ajax({
+                    url: '{% url "ivgrupo1_json" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Limpiar la lista de checkboxes de ivgrupo1
+                        $('#listaIvgrupo1Container').empty();
+
+                        // Crear checkboxes basados en los datos recibidos de ivgrupo1
+                        $.each(data, function (index, item) {
+                            var checkboxHtml = '<div class="form-check">';
+                            checkboxHtml += '<input class="form-check-input" type="checkbox" value="' + item.CodGrupo1 + '" id="checkbox1_' + index + '">';
+                            checkboxHtml += '<label class="form-check-label" for="checkbox1_' + index + '">' + item.Descripcion + '</label>';
+                            checkboxHtml += '</div>';
+
+                            $('#listaIvgrupo1Container').append(checkboxHtml);
+                        });
+
+                        // Obtener la etiqueta del grupo 1 y establecerla en el elemento h5
+                        var etiquetaGrupo1 = data.length > 0 ? data[0].etiquetagrupo1 : '';
+                        $('#grupo1etiquita').text(etiquetaGrupo1);
+                        // Manejar el evento de cambio en los checkboxes de ivgrupo1
+                        $('input[type="checkbox"][id^="checkbox1_"]').change(function () {
+                            actualizarTextarea();
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX para ivgrupo1:', error);
+                    }
+                });
+
+                // Realizar una solicitud AJAX para obtener los datos de la vista Django para ivgrupo2
+                $.ajax({
+                    url: '{% url "ivgrupo2_json" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Limpiar la lista de checkboxes de ivgrupo2
+                        $('#listaIvgrupo2Container').empty();
+
+                        // Crear checkboxes basados en los datos recibidos de ivgrupo2
+                        $.each(data, function (index, item) {
+                            var checkboxHtml = '<div class="form-check">';
+                            checkboxHtml += '<input class="form-check-input" type="checkbox" value="' + item.CodGrupo2 + '" id="checkbox2_' + index + '">';
+                            checkboxHtml += '<label class="form-check-label" for="checkbox2_' + index + '">' + item.Descripcion + '</label>';
+                            checkboxHtml += '</div>';
+
+                            $('#listaIvgrupo2Container').append(checkboxHtml);
+                        });
+
+                        // Obtener la etiqueta del grupo 2 y establecerla en el elemento h6
+                        var etiquetaGrupo2 = data.length > 0 ? data[0].etiquetagrupo2 : '';
+                        $('#grupo2etiquita').text(etiquetaGrupo2);
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX para ivgrupo2:', error);
+                    }
+                });
+
+                // Realizar una solicitud AJAX para obtener los datos de la vista Django para ivgrupo6
+                $.ajax({
+                    url: '{% url "ivgrupo6_json" %}',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Limpiar la lista de checkboxes de ivgrupo2
+                        $('#listaIvgrupo6Container').empty();
+
+                        // Crear checkboxes basados en los datos recibidos de ivgrupo2
+                        $.each(data, function (index, item) {
+                            var checkboxHtml = '<div class="form-check">';
+                            checkboxHtml += '<input class="form-check-input" type="checkbox" value="' + item.CodGrupo6 + '" id="checkbox6_' + index + '">';
+                            checkboxHtml += '<label class="form-check-label" for="checkbox6_' + index + '">' + item.Descripcion + '</label>';
+                            checkboxHtml += '</div>';
+
+                            $('#listaIvgrupo6Container').append(checkboxHtml);
+                        });
+
+                        // Obtener la etiqueta del grupo 2 y establecerla en el elemento h6
+                        var etiquetaGrupo6 = data.length > 0 ? data[0].etiquetagrupo6 : '';
+                        $('#grupo6etiquita').text(etiquetaGrupo6);
+                    },
+                    error: function (error) {
+                        console.error('Error en la solicitud AJAX para ivgrupo2:', error);
+                    }
+                });
+            }
+
+
+
+            // Función para obtener los valores seleccionados de los checkboxes
+            function obtenerValoresSeleccionados() {
+                // Obtener los valores seleccionados de los checkboxes de los items
+                var valoresSeleccionados = [];
+                $('#listaIvgrupo1Container input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                // Agregar los valores de los checkboxes de ivgrupo2
+                $('#listaIvgrupo2Container input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                // Agregar los valores de los checkboxes de ivgrupo6
+                $('#listaIvgrupo6Container input[type="checkbox"]:checked').each(function () {
+                    valoresSeleccionados.push($(this).val());
+                });
+
+                return valoresSeleccionados;
+            }
+        });
+    </script>
+
+
+
+
+{% endblock %}

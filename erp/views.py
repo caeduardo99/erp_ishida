@@ -298,7 +298,7 @@ def listapreciojson(request):
     descripcion = request.GET.get('descripcion', '')
     bodegas = request.GET.get('bodegas', '')
     tipo = request.GET.get('tipo', '')
-    print(tipo)
+    filtroitems = request.GET.get('filtroitems', '')
 
     # Construir la cláusula WHERE
     where_clause = "WHERE IVInventario.BandValida = 1 "
@@ -312,6 +312,28 @@ def listapreciojson(request):
         where_clause += "AND Ivbodega.Idbodega IN (%s)" % bodegas
     if tipo:
         where_clause += "AND IVInventario.Tipo = %s" % tipo
+    if filtroitems:
+        resultados_ivgrupo1 = ivgrupo1_json(request).content.decode('utf-8')
+        resultados_ivgrupo1 = json.loads(resultados_ivgrupo1)
+        contiene_en_ivgrupo1 = any(item['CodGrupo1'] == filtroitems for item in resultados_ivgrupo1)
+        print(contiene_en_ivgrupo1)
+
+        resultados_ivgrupo2 = ivgrupo2_json(request).content.decode('utf-8')
+        resultados_ivgrupo2 = json.loads(resultados_ivgrupo2)
+        contiene_en_ivgrupo2 = any(item['CodGrupo2'] == filtroitems for item in resultados_ivgrupo2)
+        print(contiene_en_ivgrupo2)
+
+        resultados_ivgrupo6 = ivgrupo6_json(request).content.decode('utf-8')
+        resultados_ivgrupo6 = json.loads(resultados_ivgrupo6)
+        contiene_en_ivgrupo6 = any(item['CodGrupo6'] == filtroitems for item in resultados_ivgrupo6)
+        print(contiene_en_ivgrupo6)
+
+        if contiene_en_ivgrupo1:
+            where_clause += "AND IVGrupo1.CodGrupo1 IN ('%s')" % filtroitems
+        elif contiene_en_ivgrupo2:
+            where_clause += "AND IVGrupo2.CodGrupo2 IN ('%s')" % filtroitems
+        elif contiene_en_ivgrupo6:
+            where_clause += "AND IVGrupo6.CodGrupo6 IN ('%s')" % filtroitems
 
     raw_sql_query = """
 SELECT 
@@ -324,7 +346,19 @@ SELECT
     IVInventario.Descripcion as DescripcionItem,
     IVUnidad.codUnidad,
     IVInventario.Precio1,
+    ROUND((IVInventario.Precio1 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio1IVA,
     IVInventario.Precio2,
+    ROUND((IVInventario.Precio2 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio2IVA,
+    IVInventario.Precio3,
+    ROUND((IVInventario.Precio3 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio3IVA,
+    IVInventario.Precio4,
+    ROUND((IVInventario.Precio4 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio4IVA,
+    IVInventario.Precio5,
+    ROUND((IVInventario.Precio5 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio5IVA,
+    IVInventario.Precio6,
+    ROUND((IVInventario.Precio6 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio6IVA,
+    IVInventario.Precio7,
+    ROUND((IVInventario.Precio7 * (1 + IVInventario.PorcentajeIVA)), 2) AS Precio7IVA,
     IVInventario.CodMoneda,
     SUM(IVExist.Exist) AS Existencia,
     ivinventario.observacion,
@@ -419,18 +453,207 @@ HAVING
     return JsonResponse(results, safe=False)
 
 
-def obtener_bodegas(request):
-    # Obtener una conexión a la base de datos
+@login_required
+def listaexistencia(request):
+    username = request.user
+
+    context = {
+        'username': username
+    }
+    return render(request, 'listaexistencia.html', context)
+
+
+def listaexistenciajson(request):
+    coditem = request.GET.get('coditem', '')
+    codalterno = request.GET.get('codalterno', '')
+    descripcion = request.GET.get('descripcion', '')
+    bodegas = request.GET.get('bodegas', '')
+    tipo = request.GET.get('tipo', '')
+    ctacontable = request.GET.get('ctacont', '')
+    fecha_seleccionada = request.GET.get('fecha', '')  # Obtener la fecha seleccionada desde la solicitud
+    filtroitems = request.GET.get('filtroitems', '')
+    print('filtroitems',filtroitems)
+
+    # Construir la cláusula WHERE
+    where_clause = (
+        "WHERE ((GNtrans.AfectaCantidad) = 1) "
+        "AND GNComprobante.Estado <> 3 "
+        "AND BandServicio = 0 "
+    )
+    if fecha_seleccionada:
+        where_clause += "AND GNComprobante.FechaTrans <= '%s'" % fecha_seleccionada
+    if coditem:
+        where_clause += "AND IVInventario.CodInventario LIKE '%%%s%%'" % coditem
+    if codalterno:
+        where_clause += "AND IVInventario.CodAlterno1 LIKE '%%%s%%'" % codalterno
+    if descripcion:
+        where_clause += "AND IVInventario.Descripcion LIKE '%%%s%%'" % descripcion
+    if bodegas:
+        where_clause += "AND Ivbodega.Idbodega IN (%s)" % bodegas
+    if tipo:
+        where_clause += "AND IVInventario.Tipo = %s" % tipo
+    if ctacontable:
+        where_clause += "AND ct.codcuenta = '%s'" % ctacontable
+    if filtroitems:
+        resultados_ivgrupo1 = ivgrupo1_json(request).content.decode('utf-8')
+        resultados_ivgrupo1 = json.loads(resultados_ivgrupo1)
+        contiene_en_ivgrupo1 = any(item['CodGrupo1'] == filtroitems for item in resultados_ivgrupo1)
+        print(contiene_en_ivgrupo1)
+
+        resultados_ivgrupo2 = ivgrupo2_json(request).content.decode('utf-8')
+        resultados_ivgrupo2 = json.loads(resultados_ivgrupo2)
+        contiene_en_ivgrupo2 = any(item['CodGrupo2'] == filtroitems for item in resultados_ivgrupo2)
+        print(contiene_en_ivgrupo2)
+
+        resultados_ivgrupo6 = ivgrupo6_json(request).content.decode('utf-8')
+        resultados_ivgrupo6 = json.loads(resultados_ivgrupo6)
+        contiene_en_ivgrupo6 = any(item['CodGrupo6'] == filtroitems for item in resultados_ivgrupo6)
+        print(contiene_en_ivgrupo6)
+        if contiene_en_ivgrupo1:
+            where_clause += "AND IVGrupo1.CodGrupo1 IN ('%s')" % filtroitems
+        elif contiene_en_ivgrupo2:
+            where_clause += "AND IVGrupo2.CodGrupo2 IN ('%s')" % filtroitems
+        elif contiene_en_ivgrupo6:
+            where_clause += "AND IVGrupo6.CodGrupo6 IN ('%s')" % filtroitems
+
+    raw_sql_query = """
+SELECT 
+    IVGrupo1.CodGrupo1,
+	IVInventario.CodInventario,
+	IVInventario.Descripcion, 
+	IVBodega.CodBodega,
+	SUM(IVKardex.Cantidad) AS Existencia, 
+	IVUnidad.CodUnidad as Uni,
+	IVInventario.CodMoneda,
+	IVInventario.Precio1,
+	IVInventario.Precio2,
+	IVInventario.Precio3,
+	IVInventario.Precio4,
+	IVInventario.Precio5,
+	IVInventario.Precio6,
+	0 AS Util6,
+	IVInventario.Precio7,
+	0 AS Util7,
+	IVInventario.Observacion,
+	CASE WHEN IVInventario.porcentajeiva = 0 THEN 'N' ELSE 'S' END AS IVA,
+	IVInventario.porcentajeiva * 100 AS PorIVA,
+	CantRelUni,
+	CantRelUniCont,
+	CASE 
+        WHEN ISNULL(CantRelUni, 0) <> 0 THEN FLOOR(SUM(IVKardex.Cantidad) / CantRelUni) 
+        ELSE FLOOR(SUM(IVKardex.Cantidad) / 1) 
+    END AS ExistenciaCont,
+	IVUc.CodUnidad,
+	CASE 
+        WHEN ISNULL(CantRelUni, 0) <> 0 THEN SUM(IVKardex.Cantidad) - (FLOOR(SUM(IVKardex.Cantidad) / CantRelUni)) * CantRelUni 
+        ELSE SUM(IVKardex.Cantidad) - (FLOOR(SUM(IVKardex.Cantidad) / 1)) * CantRelUni 
+    END AS CantRestoCont,
+	CASE 
+        WHEN ivinventario.IdCuentaActivo = ct.idcuenta THEN ct.codcuenta 
+        ELSE 'Sin cuenta' 
+    END AS codcuentaactivo,
+	pesoneto, 
+    pesobruto,
+	ivexist.TiempoRep, 
+    ivexist.Buffer,
+	FechaUltimOIngreso, 
+    FechaUltimOEgreso
+FROM 
+    IVGrupo1 
+    RIGHT JOIN (
+        IVGrupo2 
+        RIGHT JOIN (
+            IVGrupo3 
+            RIGHT JOIN (
+                IVGrupo4 
+                RIGHT JOIN (
+                    IVGrupo5 
+                    RIGHT JOIN (
+                        IVGrupo6 
+                        RIGHT JOIN (
+                            IVInventario 
+                            LEFT JOIN ctcuenta ct ON ct.idcuenta = ivinventario.idcuentaactivo 
+                            LEFT JOIN ivunidad ON ivunidad.idunidad = ivinventario.idunidad  
+                            LEFT JOIN ivunidad ivuC ON ivuc.idunidad = ivinventario.idunidadconteo  
+                            INNER JOIN (
+                                IVBodega 
+                                INNER JOIN (
+                                    IVKardex 
+                                    LEFT JOIN ivexist ON ivkardex.idinventario = ivexist.idinventario 
+                                    AND ivkardex.idbodega = ivexist.idBodega 
+                                    INNER JOIN (
+                                        GNtrans 
+                                        INNER JOIN GNComprobante ON GNtrans.Codtrans = GNCOmprobante.Codtrans
+                                    ) ON IVKardex.transID = GNComprobante.transID
+                                ) ON IVBodega.IdBodega = IVKArdex.IdBodega
+                            ) ON IVInventario.IdInventario = IVKardex.IdInventario
+                        ) ON IVGrupo6.IdGrupo6 = IVInventario.IdGrupo6
+                    ) ON IVGrupo5.IdGrupo5 = IVInventario.IdGrupo5
+                ) ON IVGrupo4.IdGrupo4 = IVInventario.IdGrupo4
+            ) ON IVGrupo3.Idgrupo3 = IvInventario.Idgrupo3
+        ) ON IVGrupo2.Idgrupo2 = IvInventario.Idgrupo2
+    ) ON IVGrupo1.Idgrupo1 = IvInventario.Idgrupo1
+%s
+GROUP BY 
+    IVGrupo1.CodGrupo1, 
+    IVGrupo1.Descripcion, 
+    IVGrupo2.CodGrupo2, 
+    IVGrupo2.Descripcion, 
+    IVGrupo3.CodGrupo3, 
+    IVGrupo3.Descripcion, 
+    IVGrupo4.CodGrupo4, 
+    IVGrupo4.Descripcion, 
+    IVGrupo5.CodGrupo5, 
+    IVGrupo5.Descripcion, 
+    IVGrupo6.CodGrupo6, 
+    IVGrupo6.Descripcion, 
+    IVInventario.CodInventario, 
+    IVInventario.CodAlterno1, 
+    IVInventario.CodAlterno2, 
+    IVInventario.Descripcion, 
+    IVinventario.m3, 
+    IVBodega.CodBodega, 
+    ivexist.TiempoRep, 
+    ivexist.Buffer, 
+    FechaUltimoIngreso, 
+    FechaUltimoEgreso, 
+    IVUnidad.CodUnidad, 
+    IVInventario.CodMoneda, 
+    IVInventario.Precio1, 
+    IVInventario.Precio2, 
+    IVInventario.Precio3, 
+    IVInventario.Precio4, 
+    IVInventario.Precio5, 
+    IVInventario.Precio6, 
+    IVInventario.Precio7, 
+    IvInventario.Observacion, 
+    IVUc.CodUnidad, 
+    IVInventario.porcentajeiva, 
+    CantRelUni, 
+    CantRelUniCont, 
+    IVInventario.CostoUltimoIngreso, 
+    pesoneto, 
+    pesobruto, 
+    ivinventario.IdCuentaActivo, 
+    ct.CodCuenta, 
+    ct.IdCuenta 
+HAVING 
+    SUM(IVKardex.Cantidad) <> 0 
+ORDER BY 
+    IVGrupo1.Descripcion, 
+    IVInventario.CodInventario, 
+    IVBodega.CodBodega;""" % where_clause
     connection = connections['empresa']
+
     with connection.cursor() as cursor:
-        # Ejecutar la consulta SQL
-        cursor.execute('SELECT * FROM IVBodega')
+        cursor.execute(raw_sql_query)
+        columns = [col[0] for col in cursor.description]
+        rows = cursor.fetchall()
 
-        # Obtener los resultados de la consulta
-        resultados = [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+    results = [dict(zip(columns, row)) for row in rows]
 
-    # Devolver los resultados en formato JSON
-    return JsonResponse(resultados, safe=False)
+    return JsonResponse(results, safe=False)
+
 
 
 @login_required
@@ -670,3 +893,78 @@ def infoempresa(request):
     }
 
     return render(request, 'infoempresa.html', context)
+
+
+###------BACKENDJSON--------###
+
+
+def ivgrupo1_json(request):
+    # Definir tu consulta SQL
+    sql_query = "SELECT IVGrupo1.*, gnopcion.etiquetagrupo1 FROM IVGrupo1, gnopcion;"
+    connection = connections['empresa']
+    # Ejecutar la consulta
+    with connection.cursor() as cursor:
+        cursor.execute(sql_query)
+        columns = [col[0] for col in cursor.description]
+        results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    # Devolver los resultados como JSON
+    return JsonResponse(results, safe=False)
+
+
+def ivgrupo2_json(request):
+    # Definir tu consulta SQL
+    sql_query = "SELECT IVGrupo2.*, gnopcion.etiquetagrupo2 FROM IVGrupo2, gnopcion;"
+    connection = connections['empresa']
+    # Ejecutar la consulta
+    with connection.cursor() as cursor:
+        cursor.execute(sql_query)
+        columns = [col[0] for col in cursor.description]
+        results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+    # Devolver los resultados como JSON junto con la verificación
+    return JsonResponse(results, safe=False)
+
+
+
+def ivgrupo6_json(request):
+    # Definir tu consulta SQL
+    sql_query = "SELECT IVGrupo6.*, gnopcion.etiquetagrupo6 FROM IVGrupo6, gnopcion;"
+    connection = connections['empresa']
+    # Ejecutar la consulta
+    with connection.cursor() as cursor:
+        cursor.execute(sql_query)
+        columns = [col[0] for col in cursor.description]
+        results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    # Devolver los resultados como JSON
+    return JsonResponse(results, safe=False)
+
+
+def obtener_ctacontable(request):
+    # Obtener una conexión a la base de datos
+    connection = connections['empresa']
+    with connection.cursor() as cursor:
+        # Ejecutar la consulta SQL
+        cursor.execute('SELECT * FROM CTCUENTA WHERE NIVEL IN  (1,2,3,4,5) AND BandTotal = 0 order by CodCuenta')
+
+        # Obtener los resultados de la consulta
+        resultados = [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+
+    # Devolver los resultados en formato JSON
+    return JsonResponse(resultados, safe=False)
+
+
+def obtener_bodegas(request):
+    # Obtener una conexión a la base de datos
+    connection = connections['empresa']
+    with connection.cursor() as cursor:
+        # Ejecutar la consulta SQL
+        cursor.execute('SELECT * FROM IVBodega')
+
+        # Obtener los resultados de la consulta
+        resultados = [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
+
+    # Devolver los resultados en formato JSON
+    return JsonResponse(resultados, safe=False)
